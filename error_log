@@ -1,0 +1,3 @@
+[04-Mar-2020 05:24:06 America/New_York] PHP Fatal error:  Cannot redeclare Event::addEditEventType() in /home/heydpqhj/public_html/scheduler/application/modules/event/controllers/Event.php on line 100
+[06-Mar-2020 09:58:41 America/New_York] PHP Fatal error:  Maximum execution time of 300 seconds exceeded in /home/heydpqhj/public_html/scheduler/application/modules/report/controllers/Report.php on line 33
+[09-Mar-2020 06:38:27 America/New_York] PHP Fatal error:  Cannot redeclare Event::deleteEvent() in /home/heydpqhj/public_html/scheduler/application/modules/event/controllers/Event.php on line 158
