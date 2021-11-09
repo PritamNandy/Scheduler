@@ -50,10 +50,15 @@
                                         <tbody>
                                         <?php foreach($reports as $report) {
                                             if($report->date == $from) { 
-                                                $font_color = $this->db->get_where('event_types',array('id =>',$report->event_type))->row()->font_color;   
+                                                $font_color = $this->db->get_where('event_types',array('id =>',$report->event_type))->row();
+												if(isset($font_color->font_color)) {
+													$font_color = $font_color->font_color;
+												} else {
+													$font_color = "#333";
+												}
                                             ?>
                                             <tr bgcolor="<?php echo $report->color; ?>">
-                                                <td><font color="<?php echo $font_color; ?>"><?php echo date("g:i a",$report->start_time) . ' - ' . date("g:i a",$report->end_time); ?></font></td>
+                                                <td><font color="<?php echo $font_color; ?>"><?php echo date("g:i a",$report->start_time) . ' - ' . $report->end_time != null || $report->end_time != "" ? date("g:i a",$report->end_time) : ""; ?></font></td>
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $report->name; ?></font></td>
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $this->db->get_where('location',array('id' => $report->location))->row()->name; ?></font></td>
                                             </tr>

@@ -82,7 +82,7 @@ class Event extends MX_Controller
         if(!empty($end_time)) {
             $etc = strtotime($end_time);
         } else {
-            $etc = null;
+            $etc = "";
         }
         /*$this->db->where('location',$location);
         $this->db->where('date',strtotime($date));
@@ -287,9 +287,23 @@ class Event extends MX_Controller
                 $location = $this->db->get_where('location',array('id' => $schedule->location))->row()->name;
                 $font_color = $this->db->get_where('event_types',array('id' => $schedule->event_type))->row()->font_color;
                 //$data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$time2</font></td><td><font color='$font_color'>$name</font></td><td><font color='$font_color'>$location</font></td><td><a class='btn btn-warning btn-sm' href='editEvent/?id=$schedule->id'>Edit</a> <a class='btn btn-danger btn-sm' href='deleteEvent/?id=$schedule->id'>Delete</a></td></tr>";
-                $data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$time2</font></td><td><font color='$font_color'>$name</font></td><td><font color='$font_color'>$location</font></td>"
+                if(!empty($schedule->notes)) {
+                    $data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'>"
+                        . "<td rowspan='2'><font color='$font_color'>$time2</font></td>"
+                        . "<td><font color='$font_color'>$name</font></td>"
+                        . "<td rowspan='2'><font color='$font_color'>$location</font></td>"
+                        . "<td rowspan='2'><a class='btn btn-warning btn-sm' href='".site_url('event/editEvent/?id='.$schedule->id)."'>Edit</a> "
+                        . "<a class='btn btn-danger btn-sm' href='".site_url('event/deleteEvent/?id='.$schedule->id)."'>Delete</a></td></tr>"
+                        . "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$schedule->notes</font></td></tr>";
+                } else {
+                   $data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'>"
+                        . "<td><font color='$font_color'>$time2</font></td>"
+                        . "<td><font color='$font_color'>$name</font></td>"
+                        . "<td><font color='$font_color'>$location</font></td>"
                         . "<td><a class='btn btn-warning btn-sm' href='".site_url('event/editEvent/?id='.$schedule->id)."'>Edit</a> "
-                        . "<a class='btn btn-danger btn-sm' href='".site_url('event/deleteEvent/?id='.$schedule->id)."'>Delete</a></td></tr>";
+                        . "<a class='btn btn-danger btn-sm' href='".site_url('event/deleteEvent/?id='.$schedule->id)."'>Delete</a></td></tr>"; 
+                }
+                
                 $data['hidden_table'] .= "<tr bgcolor='$schedule->color'><td><font color='$font_color'>$date2</font></td>"
                         . "<td><font color='$font_color'>$time2</font></td>"
                         . "<td><font color='$font_color'>$ed</font></td>"
