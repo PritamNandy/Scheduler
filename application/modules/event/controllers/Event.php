@@ -63,120 +63,191 @@ class Event extends MX_Controller
         $this->session->set_flashdata('message','Event Deleted Successfully!');
         redirect('event/addMoreEvent/?date='.$event->date);
     }
+
+	function addEditEvent() {
+		$id = $this->input->post('id');
+		$date = $this->input->post('date');
+		$start_time = $this->input->post('start_time');
+		$end_time = $this->input->post('end_time');
+		$event = $this->input->post('event_name');
+		$event_type = $this->input->post('event_type');
+		$notes = $this->input->post('notes');
+		$location = $this->input->post('location');
+		$isAged = $this->input->post('isAged');
+
+		$stc = strtotime($start_time);
+		if(!empty($end_time)) {
+			$etc = strtotime($end_time);
+		} else {
+			$etc = null;
+		}
+
+		$this->form_validation->set_rules('date','Date','required|xss_clean');
+		$this->form_validation->set_rules('event_name','Event Name','required|xss_clean');
+		$this->form_validation->set_rules('event_type','Event Type','required|xss_clean');
+		$this->form_validation->set_rules('start_time','Start Time','required|xss_clean');
+		$this->form_validation->set_rules('location','Location','required|xss_clean');
+
+		if($this->form_validation->run() == true) {
+			$ts = strtotime($date);
+
+			$checked = $this->db->get_where('day_heading_time',array('date' => strtotime($date)))->row();
+			if(!empty($checked)) {
+				$day_headings = $checked->day_heading;
+			} else {
+				$day_headings = null;
+			}
+			if(!empty($end_time)) {
+				$end_time = strtotime($end_time);
+			} else {
+				$end_time = null;
+			}
+			//$event_types = implode(",", $event_type);
+			if(empty($id)) {
+				$data = array(
+					'date' => strtotime($date),
+					'name' => $event,
+					'day_heading' => $day_headings,
+					'notes' => $notes,
+					'event_type' => $event_type,
+					'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
+					'start_time' => strtotime($start_time),
+					'end_time' => $end_time,
+					'location' => $location,
+					'isAged' => $isAged
+				);
+
+				$this->event_model->addEvent($data);
+				$id = $this->db->insert_id();
+				$this->session->set_flashdata('message', 'Add Successfully');
+				//redirect('event/addEvent');
+				redirect('event/addMoreEvent/?id='.$id);
+			} else {
+				$data = array(
+					'date' => strtotime($date),
+					'name' => $event,
+					'day_heading' => $day_headings,
+					'notes' => $notes,
+					'event_type' => $event_type,
+					'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
+					'start_time' => strtotime($start_time),
+					'end_time' => $end_time,
+					'location' => $location,
+					'isAged' => $isAged
+				);
+				$this->event_model->editEvent($id, $data);
+				$this->session->set_flashdata('message', 'Edit Successful!');
+				//redirect('event/addEvent');
+				redirect('event/addMoreEvent/?id='.$id);
+			}
+		} else {
+			$this->session->set_flashdata('message', 'Not Successful!');
+			redirect('event/addEvent');
+		}
+	}
     
-    function addEditEvent() {
-        $id = $this->input->post('id');
-        $date = $this->input->post('date');
-        $day_heading = $this->input->post('day_heading');
-        $day_time = $this->input->post('day_time');
-        $start_time = $this->input->post('start_time');
-        $end_time = $this->input->post('end_time');
-        $event = $this->input->post('event_name');
-        $event_type = $this->input->post('event_type');
-        $notes = $this->input->post('notes');
-        $location = $this->input->post('location');
-        $isAged = $this->input->post('isAged');
-        $day_heading_text = $this->input->post('day_heading_text');
-        
-        $stc = strtotime($start_time);
-        if(!empty($end_time)) {
-            $etc = strtotime($end_time);
-        } else {
-            $etc = null;
-        }
-        /*$this->db->where('location',$location);
-        $this->db->where('date',strtotime($date));
-        $this->db->where('start_time =',$stc);
-        $this->db->where('start_time <',$etc);
-        $this->db->where('end_time >',$stc);
-        $this->db->where('end_time <',$etc);
-        $lcs = $this->db->get('events')->result();
-        if(!empty($lcs)) {
-            $this->session->set_flashdata('message', 'Location Booked!');
-            redirect('event/addEvent');
-        }*/
-        
-        $this->form_validation->set_rules('date','Date','required|xss_clean');
-        $this->form_validation->set_rules('day_heading[]','Day Heading','required|xss_clean');
-        $this->form_validation->set_rules('day_time[]','Day Time','required|xss_clean');
-        $this->form_validation->set_rules('event_name','Event Name','required|xss_clean');
-        $this->form_validation->set_rules('event_type','Event Type','required|xss_clean');
-        $this->form_validation->set_rules('start_time','Start Time','required|xss_clean');
-        $this->form_validation->set_rules('location','Location','required|xss_clean');
-        $day_headings = implode(",", $day_heading);
-        if(!empty($day_heading_text)) {
-            $dh = array(
-                'name' => $day_heading_text,
-            );
-            $this->event_model->addDayHeading($dh);
-            $dhi = $this->db->insert_id();
-            $day_headings .= ','.$dhi;
-        }
-        
-        if($this->form_validation->run() == true) {
-            $ts = strtotime($date);
-            $data2 = array(
-                'date' => strtotime($date),
-                'sunrise' => $day_time[0],
-                'chatzos' => $day_time[1],
-                'kriyas_shema_1' => $day_time[2],
-                'kriyas_shema_2' => $day_time[3],
-                'shkiya_1' => $day_time[4],
-                'shkiya_2' => $day_time[5],
-                'day_heading' => $day_headings
-            );
-            $checked = $this->db->get_where('day_heading_time',array('date' => strtotime($date)))->row();
-            if(!empty($checked)) {
-                $this->event_model->updateDateTime($ts,$data2);
-            } else {
-               $this->event_model->insertDateTime($data2);
-            }
-            if(!empty($end_time)) {
-                $end_time = strtotime($end_time);
-            }
-            //$event_types = implode(",", $event_type);
-            if(empty($id)) {
-                $data = array(
-                    'date' => strtotime($date),
-                    'name' => $event,
-                    'day_heading' => $day_headings,
-                    'notes' => $notes,
-                    'event_type' => $event_type,
-                    'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-                    'start_time' => strtotime($start_time),
-                    'end_time' => $end_time,
-                    'location' => $location,
-                    'isAged' => $isAged
-                );
-                
-                $this->event_model->addEvent($data);
-                $id = $this->db->insert_id();
-                $this->session->set_flashdata('message', 'Add Successfully');
-                //redirect('event/addEvent');
-                redirect('event/addMoreEvent/?id='.$id);
-            } else {
-                $data = array(
-                    'date' => strtotime($date),
-                    'name' => $event,
-                    'day_heading' => $day_headings,
-                    'notes' => $notes,
-                    'event_type' => $event_type,
-                    'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-                    'start_time' => strtotime($start_time),
-                    'end_time' => $end_time,
-                    'location' => $location,
-                    'isAged' => $isAged
-                );
-                $this->event_model->editEvent($id, $data);
-                $this->session->set_flashdata('message', 'Edit Successful!');
-                //redirect('event/addEvent');
-                redirect('event/addMoreEvent/?id='.$id);
-            }
-        } else {
-            $this->session->set_flashdata('message', 'Not Successful!');
-            redirect('event/addEvent');
-        }
-    }
+//    function addEditEvent() {
+//        $id = $this->input->post('id');
+//        $date = $this->input->post('date');
+//        $day_heading = $this->input->post('day_heading');
+//        $day_time = $this->input->post('day_time');
+//        $start_time = $this->input->post('start_time');
+//        $end_time = $this->input->post('end_time');
+//        $event = $this->input->post('event_name');
+//        $event_type = $this->input->post('event_type');
+//        $notes = $this->input->post('notes');
+//        $location = $this->input->post('location');
+//        $isAged = $this->input->post('isAged');
+//        $day_heading_text = $this->input->post('day_heading_text');
+//
+//        $stc = strtotime($start_time);
+//        if(!empty($end_time)) {
+//            $etc = strtotime($end_time);
+//        } else {
+//            $etc = null;
+//        }
+//
+//        $this->form_validation->set_rules('date','Date','required|xss_clean');
+//        $this->form_validation->set_rules('day_heading[]','Day Heading','required|xss_clean');
+//        $this->form_validation->set_rules('day_time[]','Day Time','required|xss_clean');
+//        $this->form_validation->set_rules('event_name','Event Name','required|xss_clean');
+//        $this->form_validation->set_rules('event_type','Event Type','required|xss_clean');
+//        $this->form_validation->set_rules('start_time','Start Time','required|xss_clean');
+//        $this->form_validation->set_rules('location','Location','required|xss_clean');
+//        $day_headings = implode(",", $day_heading);
+//        if(!empty($day_heading_text)) {
+//            $dh = array(
+//                'name' => $day_heading_text,
+//            );
+//            $this->event_model->addDayHeading($dh);
+//            $dhi = $this->db->insert_id();
+//            $day_headings .= ','.$dhi;
+//        }
+//
+//        if($this->form_validation->run() == true) {
+//            $ts = strtotime($date);
+//            $data2 = array(
+//                'date' => strtotime($date),
+//                'sunrise' => $day_time[0],
+//                'chatzos' => $day_time[1],
+//                'kriyas_shema_1' => $day_time[2],
+//                'kriyas_shema_2' => $day_time[3],
+//                'shkiya_1' => $day_time[4],
+//                'shkiya_2' => $day_time[5],
+//                'day_heading' => $day_headings
+//            );
+//            $checked = $this->db->get_where('day_heading_time',array('date' => strtotime($date)))->row();
+//            if(!empty($checked)) {
+//                $this->event_model->updateDateTime($ts,$data2);
+//            } else {
+//               $this->event_model->insertDateTime($data2);
+//            }
+//            if(!empty($end_time)) {
+//                $end_time = strtotime($end_time);
+//            }
+//            //$event_types = implode(",", $event_type);
+//            if(empty($id)) {
+//                $data = array(
+//                    'date' => strtotime($date),
+//                    'name' => $event,
+//                    'day_heading' => $day_headings,
+//                    'notes' => $notes,
+//                    'event_type' => $event_type,
+//                    'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
+//                    'start_time' => strtotime($start_time),
+//                    'end_time' => $end_time,
+//                    'location' => $location,
+//                    'isAged' => $isAged
+//                );
+//
+//                $this->event_model->addEvent($data);
+//                $id = $this->db->insert_id();
+//                $this->session->set_flashdata('message', 'Add Successfully');
+//                //redirect('event/addEvent');
+//                redirect('event/addMoreEvent/?id='.$id);
+//            } else {
+//                $data = array(
+//                    'date' => strtotime($date),
+//                    'name' => $event,
+//                    'day_heading' => $day_headings,
+//                    'notes' => $notes,
+//                    'event_type' => $event_type,
+//                    'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
+//                    'start_time' => strtotime($start_time),
+//                    'end_time' => $end_time,
+//                    'location' => $location,
+//                    'isAged' => $isAged
+//                );
+//                $this->event_model->editEvent($id, $data);
+//                $this->session->set_flashdata('message', 'Edit Successful!');
+//                //redirect('event/addEvent');
+//                redirect('event/addMoreEvent/?id='.$id);
+//            }
+//        } else {
+//            $this->session->set_flashdata('message', 'Not Successful!');
+//            redirect('event/addEvent');
+//        }
+//    }
             
     function eventTypes() {
         $data['settings'] = $this->db->get('settings')->row();
