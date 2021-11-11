@@ -31,8 +31,8 @@
         <form class="form-signin" action="<?php echo site_url('auth/login'); ?>" method="post">
         <h2 class="form-signin-heading"><?php echo lang('sign_in_now'); ?></h2>
         <div class="login-wrap">
-            <input type="text" class="form-control" placeholder="<?php echo lang('email'); ?>" name="identity" value="admin@admin.com" autofocus>
-            <input type="password" class="form-control" name="password" placeholder="<?php echo lang('password'); ?>" value="password">
+            <input type="text" class="form-control" placeholder="<?php echo lang('email'); ?>" name="identity" value="tom@kernoffice.com" autofocus>
+            <input type="password" class="form-control" name="password" placeholder="<?php echo lang('password'); ?>" value="12345678">
             <!--<label class="checkbox">
                 <span class="pull-right">
                     <a data-toggle="modal" href="#myModal"> <?php echo lang('forgot_password'); ?></a>

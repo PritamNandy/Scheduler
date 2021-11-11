@@ -133,6 +133,13 @@
                             </a>
                         </li>
 
+						<li>
+							<a href="<?php echo site_url('dayinfo/addDayInfoView'); ?>">
+								<i class="fa fa-sun-o"></i>
+								<span><?php echo lang('day_info'); ?></span>
+							</a>
+						</li>
+
                         <li class="sub-menu">
                             <a href="javascript:;" >
                                 <i class="fa fa-calendar"></i>

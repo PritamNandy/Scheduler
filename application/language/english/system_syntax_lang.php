@@ -39,4 +39,5 @@ $lang['settings']                           = 'Settings';
 $lang['add_successful']                     = 'Added Successfully!';
 $lang['delete_successful']                  = 'Deleted Successfully!';
 $lang['edit_successful']                    = 'Edited Successfully!';
+$lang['day_info']							= 'Day Info';
 
