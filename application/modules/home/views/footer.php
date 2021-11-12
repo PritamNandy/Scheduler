@@ -1,5 +1,5 @@
 <!--footer start-->
-<footer class="site-footer" style="bottom: 0px !important;">
+<footer class="site-footer" style="bottom: 0px !important; z-index: 0 !important;">
     <div class="text-center">
         2018 &copy; Scheduler by <b><a href="https://heydev.net">HeyDev</a></b>.
         <a href="#" class="go-top">

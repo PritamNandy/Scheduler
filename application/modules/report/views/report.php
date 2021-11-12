@@ -28,17 +28,19 @@
                                 <?php if(!empty($reports) || $reports != NULL) {
                                     while($from <= $to) {  ?>
                                 <div>
-                                    <h1><?php echo date('d-m-Y', $from)?></h1>
-                                    <!--<h4><?php foreach($reports as $report) {
-                                        if($report->date == $from) {
-                                            $day_headings = explode(',',$report->day_heading);
-                                            foreach($day_headings as $dh) {
-                                                echo $this->db->get_where('day_heading', array('id =>',$dh))->row()->name; ?><br><?php  
-                                            }
-                                        }
-                                    } ?></h4>-->
+                                <h3><?php echo date('m/d/Y', $from)?></h3>
+									<div>
+										<?php $day_heading = $this->db->get_where('day_heading_time', array('date' => $from))->row();
+										if(isset($day_heading)) { ?>
+											<h6>Sunrise: <?php echo $day_heading->sunrise; ?></h6>
+											<h6>Chatzos: <?php echo $day_heading->chatzos; ?></h6>
+											<h6>Kriyas Shema 1: <?php echo $day_heading->kriyas_shema_1; ?></h6>
+											<h6>Kriyas Shema 2: <?php echo $day_heading->kriyas_shema_2; ?></h6>
+											<h6>Shkiya 1: <?php echo $day_heading->shkiya_1; ?></h6>
+											<h6>Shkiya 2: <?php echo $day_heading->shkiya_2; ?></h6>
+										<?php } ?>
+									</div>
                                 </div>
-                                <br>
                                         <table class="table">
                                         <thead class="thead-dark">
                                             <tr>
@@ -58,7 +60,7 @@
 												}
                                             ?>
                                             <tr bgcolor="<?php echo $report->color; ?>">
-                                                <td><font color="<?php echo $font_color; ?>"><?php echo date("g:i a",$report->start_time) . ' - ' . $report->end_time != null || $report->end_time != "" ? date("g:i a",$report->end_time) : ""; ?></font></td>
+                                                <td><font color="<?php echo $font_color; ?>"><?php echo date("h:i a",$report->start_time) . ' - ' . $report->end_time != null || $report->end_time != "" ? date("h:i a",$report->end_time) : ""; ?></font></td>
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $report->name; ?></font></td>
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $this->db->get_where('location',array('id' => $report->location))->row()->name; ?></font></td>
                                             </tr>
