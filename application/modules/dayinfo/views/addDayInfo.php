@@ -113,6 +113,7 @@
 											</div>
 										</div>
 									</div>
+									<input type="hidden" name="id" id="dayInfoId">
 									<div class="col-md-12">
 										<button class="btn btn-success" type="submit">Submit</button>
 									</div>
@@ -129,3 +130,32 @@
 <!--main content end-->
 
 <script src="<?php echo site_url('common/js/jquery.js'); ?>"></script>
+<script>
+	$(function() {
+		$(document).on('change', '.eventDate', function () {
+			var date = $('.eventDate').val();
+			console.log(date);
+			$.ajax({
+				url: "<?php echo base_url(); ?>event/getDayScheduleByJson?date=" + date,
+				method: 'GET',
+				data: '',
+				dataType: "json",
+				success: function (response) {
+					console.log(response);
+					$('.sunrise').val(response.dayTime.sunrise);
+					$('.chatzos').val(response.dayTime.chatzos);
+					$('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
+					$('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
+					$('.shkiya_1').val(response.dayTime.shkiya_1);
+					$('.shkiya_2').val(response.dayTime.shkiya_2);
+					if(response.dayTime.day_heading === "") {
+						$('.selectMultiple').val("").trigger('change');
+					} else {
+						var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+						$('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
+					}
+				}
+			});
+		});
+	})
+</script>

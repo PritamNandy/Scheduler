@@ -24,7 +24,7 @@
                                     <tr>
                                         <td><?php echo $location->name; ?></td>
                                         <td><?php echo $location->description; ?></td>
-                                        <td><a class="btn btn-sm btn-warning edit" href="<?php echo site_url('event/editLocation/?id='.$location->id); ?>" data-id="<?php echo $location->id; ?>"><i class="fa fa-edit"></i> <?php echo lang('edit'); ?></a> <a class="btn btn-sm btn-danger" href="<?php echo site_url('event/deleteDayHeading/?id='.$location->id); ?>" onclick="confirm('Are you sure?')"><i class="fa fa-trash-o"></i> <?php echo lang('delete'); ?></a>
+                                        <td><a class="btn btn-sm btn-warning edit" href="<?php echo site_url('event/editLocation/?id='.$location->id); ?>" data-id="<?php echo $location->id; ?>"><i class="fa fa-edit"></i> <?php echo lang('edit'); ?></a> <a class="btn btn-sm btn-danger" href="<?php echo site_url('event/deleteLocation/?id='.$location->id); ?>" onclick="confirm('Are you sure?')"><i class="fa fa-trash-o"></i> <?php echo lang('delete'); ?></a>
                                         <?php if($location->status == 1) { ?>
                                             <a class="btn btn-primary btn-sm" href="<?php echo site_url('event/locationStatus/?id='.$location->id."&status=0"); ?>">Active</a>
                                         <?php } else { ?>

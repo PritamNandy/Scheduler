@@ -140,18 +140,23 @@
 							</a>
 						</li>
 
-                        <li class="sub-menu">
-                            <a href="javascript:;" >
-                                <i class="fa fa-calendar"></i>
-                                <span><?php echo lang('events'); ?></span>
-                            </a>
-                            <ul class="sub">
-                                <li><a  href="<?php echo site_url('event/addEvent'); ?>"><?php echo lang('add') . " " . lang('event'); ?></a></li>
-                                <li><a  href="<?php echo site_url('event/eventTypes'); ?>"><?php echo lang('event') . " " . lang('types'); ?></a></li>
-                                <li><a  href="<?php echo site_url('event/dayHeading'); ?>"><?php echo lang('day') . " " . lang('heading'); ?></a></li>
-                                <li><a  href="<?php echo site_url('event/location'); ?>"><?php echo lang('location'); ?></a></li>
-                            </ul>
-                        </li>
+						<li>
+							<a  href="<?php echo site_url('event/addEvent'); ?>">
+								<i class="fa fa-calendar"></i>
+								<span><?php echo "Daily events"; ?></span>
+							</a>
+						</li>
+
+<!--                        <li class="sub-menu">-->
+<!--                            <a href="javascript:;" >-->
+<!--                                <i class="fa fa-calendar"></i>-->
+<!--                                <span>--><?php //echo lang('events'); ?><!--</span>-->
+<!--                            </a>-->
+<!--                            <ul class="sub">-->
+<!---->
+<!---->
+<!--                            </ul>-->
+<!--                        </li>-->
 
                         <li class="sub-menu">
                             <a href="javascript:;" >
@@ -169,7 +174,24 @@
                                 <span><?php echo lang('settings'); ?></span>
                             </a>
                         </li>
-                        
+						<li>
+							<a  href="<?php echo site_url('event/eventTypes'); ?>">
+								<i class="fa fa-calendar"></i>
+								<span><?php echo lang('event') . " " . lang('types'); ?></span>
+							</a>
+						</li>
+						<li>
+							<a  href="<?php echo site_url('event/dayHeading'); ?>">
+								<i class="fa fa-calendar-o"></i>
+								<span><?php echo lang('day') . " " . lang('heading'); ?></span>
+							</a>
+						</li>
+						<li>
+							<a  href="<?php echo site_url('event/location'); ?>">
+								<i class="fa fa-building-o"></i>
+								<span><?php echo lang('location'); ?></span>
+							</a>
+						</li>
                         <li>
                             <a href="<?php echo site_url('profile'); ?>">
                                 <i class="fa fa-user"></i>
