@@ -35,10 +35,17 @@
 											echo "<b>Day Heading:</b>";
 											$dh = $day_heading->day_heading;
 											$dh = explode(',', $dh);
+											$i = 0;
 											foreach ($dh as $d) {
 												$name = $this->db->get_where('day_heading', array('id' => $d))->row();
 												if(isset($name)) {
-													echo '<h6>'.$name->name.'</h6>';
+													if($i == 0) {
+														echo '<span>'.$name->name.'</span>';
+														$i++;
+													} else {
+														echo '<span>'.','.$name->name.'</span>';
+														$i++;
+													}
 												}
 											}?>
 											<h6>Sunrise: <?php echo $day_heading->sunrise; ?></h6>
@@ -76,7 +83,13 @@
 												<?php } ?>
 
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $report->name; ?></font></td>
-                                                <td><font color="<?php echo $font_color; ?>"><?php echo $this->db->get_where('location',array('id' => $report->location))->row()->name; ?></font></td>
+												<?php $locationTemp = $this->db->get_where('location',array('id' => $report->location))->row();
+												if(isset($locationTemp)) { ?>
+													<td><font color="<?php echo $font_color; ?>"><?php echo $this->db->get_where('location',array('id' => $report->location))->row()->name; ?></font></td>
+												<?php } else { ?>
+												<td><font color="<?php echo $font_color; ?>"></font></td>
+												<?php } ?>
+
                                             </tr>
                                         <?php    }
                                         } ?>

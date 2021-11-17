@@ -105,8 +105,10 @@
                         <hr>
                         <br>
                         <h4 style="text-align: center; font-weight: 700;"><?php echo lang('schedule'); ?></h4>
+						<div class="dayInfoDetails"></div>
                         <!--<input type="button print_pdf " onclick="printDiv('schedule_table')" value="print a div!" />--><a class="btn btn-warning btn-md" onclick="printCSV()"><font style="color: white;">Download CSV</font></a>
-                        <div id="schedule_table" class="schedule_table">
+
+						<div id="schedule_table" class="schedule_table">
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
@@ -169,9 +171,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div id="hidden_table" class="hidden_table" style="display: none;">
-                            
-                        </div>
+                        <div id="hidden_table" class="hidden_table" style="display: none;"></div>
                     </div>
                 </section>
             </div>
@@ -211,6 +211,7 @@
                     $('.shkiya_2').val(response.dayTime.shkiya_2);
                     $('.in_table_styles').remove();
                     $('.table_styles').append(response.styles);
+					$('.dayInfoDetails').append(response.dayInfo)
                     if(response.dayTime.day_heading === "") {
                         $('.selectMultiple').val("").trigger('change');
                     } else {
@@ -220,7 +221,8 @@
                     }
                 }
             });
-        $('.eventDate').on('change', function () {
+
+			$('.eventDate').on('change', function () {
             var date = $('.eventDate').val();
             console.log(date);
             $.ajax({
@@ -245,6 +247,10 @@
                     $('.shkiya_2').val(response.dayTime.shkiya_2);
                     $('.in_table_styles').remove();
                     $('.table_styles').append(response.styles);
+					$('.dayInfoDetails').empty();
+					$('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: "+response.dayTime.sunrise+"</h6><h6>Chatzos: "+response.dayTime.chatzos
+						+"</h6><h6>Kriyas Shema 1: "+response.dayTime.kriyas_shema_1+"</h6><h6>Kriyas Shema 2: "+response.dayTime.kriyas_shema_2
+						+"</h6><h6>Shkiya 1: "+response.dayTime.shkiya_1+"</h6><h6>Shkiya 2: "+response.dayTime.shkiya_2+"</h6>");
                     if(response.dayTime.day_heading === "") {
                         $('.selectMultiple').val("").trigger('change');
                     } else {

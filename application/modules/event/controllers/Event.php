@@ -342,10 +342,10 @@ class Event extends MX_Controller
             foreach($schedules as $schedule) {
                 $date2 = date('m/d/Y',$schedule->date);
                 $hidden_event_type = $this->db->get_where('event_types',array('id' => $schedule->event_type))->row();
-                if(!empty($schedule->end_time)){
-                    $ed = date("h:i A",$schedule->end_time);
+                if(!empty($schedule->end_time) || $schedule->end_time != null){
+                    $ed = " - ".date("h:i A",$schedule->end_time);
                 } else {
-                    $ed = 00;
+                    $ed = "";
                 }
                 $isAged = "";
                 if(!empty($schedule->isAged)) {
@@ -353,9 +353,15 @@ class Event extends MX_Controller
                 } else {
                     $isAged = "No";
                 }
-                $time2 = date("h:i A",$schedule->start_time) . ' - ' . ($ed);
+
+                $time2 = date("h:i A",$schedule->start_time) . $ed;
                 $name = $schedule->name;
-                $location = $this->db->get_where('location',array('id' => $schedule->location))->row()->name;
+                $location = $this->db->get_where('location',array('id' => $schedule->location))->row();
+				if(isset($location)) {
+					$location = $location->name;
+				} else {
+					$location = "";
+				}
                 $font_color = $this->db->get_where('event_types',array('id' => $schedule->event_type))->row()->font_color;
                 //$data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$time2</font></td><td><font color='$font_color'>$name</font></td><td><font color='$font_color'>$location</font></td><td><a class='btn btn-warning btn-sm' href='editEvent/?id=$schedule->id'>Edit</a> <a class='btn btn-danger btn-sm' href='deleteEvent/?id=$schedule->id'>Delete</a></td></tr>";
                 $data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$time2</font></td><td><font color='$font_color'>$name</font></td><td><font color='$font_color'>$location</font></td>"
