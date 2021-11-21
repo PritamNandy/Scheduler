@@ -15,6 +15,7 @@ class Event extends MX_Controller
         $this->load->view('home/header',$data);
         $this->load->view('event');
         $this->load->view('home/footer');
+		echo "Hello";
     }
     
     function addEvent() {
