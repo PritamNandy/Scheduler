@@ -15,8 +15,8 @@
                                 <form action="<?php echo site_url('report/getReport'); ?>" method="post">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Date Range</label>
-                                        <input type="text" class="form-control" name="daterange" value="<?php if(!empty($daterange)) {
-                                            echo $daterange;
+                                        <input type="text" class="form-control" name="daterange" value="<?php if(!empty($daterange->daterange)) {
+                                            echo $daterange->daterange;
                                         } ?>"/>
                                     </div>
                                     <div class="form-group">
@@ -32,7 +32,7 @@
                                 <h3><?php echo date('m/d/Y', $from)?></h3>
 									<div>
 										<?php if(isset($day_heading)) {
-											echo "<b>Day Heading:</b>";
+											echo "<b>Day Heading: </b>";
 											$dh = $day_heading->day_heading;
 											$dh = explode(',', $dh);
 											$i = 0;
@@ -43,7 +43,7 @@
 														echo '<span>'.$name->name.'</span>';
 														$i++;
 													} else {
-														echo '<span>'.','.$name->name.'</span>';
+														echo '<span>'.', '.$name->name.'</span>';
 														$i++;
 													}
 												}
@@ -76,11 +76,16 @@
 												}
                                             ?>
                                             <tr bgcolor="<?php echo $report->color; ?>">
-												<?PHP if($report->end_time != null || $report->end_time != "") { ?>
+                                                <?php if($report->text_time == "yes") { if($report->end_time != null || $report->end_time != "") { ?>
+													<td><font color="<?php echo $font_color; ?>"><?php echo $report->start_time . ' - ' . $report->end_time; ?></font></td>
+												<?php } else { ?>
+													<td><font color="<?php echo $font_color; ?>"><?php echo $report->start_time; ?></font></td>
+												<?php } } else { if($report->end_time != null || $report->end_time != "") { ?>
 													<td><font color="<?php echo $font_color; ?>"><?php echo date("h:i a",$report->start_time) . ' - ' . date("h:i a",$report->end_time); ?></font></td>
 												<?php } else { ?>
 													<td><font color="<?php echo $font_color; ?>"><?php echo date("h:i a",$report->start_time); ?></font></td>
-												<?php } ?>
+												<?php } } ?>
+												
 
                                                 <td><font color="<?php echo $font_color; ?>"><?php echo $report->name; ?></font></td>
 												<?php $locationTemp = $this->db->get_where('location',array('id' => $report->location))->row();

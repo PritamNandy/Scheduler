@@ -27,6 +27,7 @@ class Dayinfo extends MX_Controller
 		$data['day_headings'] = $this->db->get('day_heading')->result();
 		$data['event_types'] = $this->db->get('event_types')->result();
 		$data['locations'] = $this->db->get('location')->result();
+		$data['initial_date'] = $this->db->get_where('report_date', array("id" => 1))->row();
 		$this->load->view('home/header',$data);
 		$this->load->view('addDayInfo',$data);
 		$this->load->view('home/footer');
@@ -69,6 +70,12 @@ class Dayinfo extends MX_Controller
 			} else {
 				$this->event_model->insertDateTime($data2);
 			}
+			
+			$data = array(
+			    'day_heading' => $day_headings
+			);
+			$this->db->where('date', strtotime($date));
+			$this->db->update('events', $data);
 
 			//$event_types = implode(",", $event_type);
 			$this->session->set_flashdata('message', 'Added Successful!');
@@ -78,5 +85,17 @@ class Dayinfo extends MX_Controller
 			$this->session->set_flashdata('message', 'Not Successful!');
 			redirect('dayinfo/addDayInfoView');
 		}
+	}
+	
+	function changeDate() {
+	    $date = $this->input->get("date");
+	    $type = $this->input->get("type");
+	    if($type == "forward") {
+	        $newDate = date('m/d/Y', strtotime("+1 day", strtotime($date)));
+	        echo json_encode($newDate);
+	    } else {
+	        $newDate = date('m/d/Y', strtotime("-1 day", strtotime($date)));
+	        echo json_encode($newDate);
+	    }
 	}
 }

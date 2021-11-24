@@ -189,6 +189,11 @@
 										<span><?php echo lang('location'); ?></span>
 									</a>
 								</li>
+								<li>
+									<a  href="<?php echo site_url('report/defaultDate'); ?>">
+										<span><?php echo "Default Date"; ?></span>
+									</a>
+								</li>
 							</ul>
 						</li>
 <!--                        <li>-->

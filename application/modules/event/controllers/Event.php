@@ -22,6 +22,7 @@ class Event extends MX_Controller
         $data['day_headings'] = $this->db->get('day_heading')->result();
         $data['event_types'] = $this->db->get('event_types')->result();
         $data['locations'] = $this->db->get('location')->result();
+        $data['initial_date'] = $this->db->get_where('report_date', array("id" => 1))->row();
         $this->load->view('home/header',$data);
         $this->load->view('addEvent',$data);
         $this->load->view('home/footer');
@@ -39,6 +40,7 @@ class Event extends MX_Controller
         } else {
             $data['delete_date'] = $date;
         }
+        $data['initial_date'] = $this->db->get_where('report_date', array("id" => 1))->row();
         $this->load->view('home/header',$data);
         $this->load->view('addEvent',$data);
         $this->load->view('home/footer');
@@ -74,13 +76,19 @@ class Event extends MX_Controller
 		$notes = $this->input->post('notes');
 		$location = $this->input->post('location');
 		$isAged = $this->input->post('isAged');
+		$textTime = $this->input->post('textTime');
 
-		$stc = strtotime($start_time);
-		if(!empty($end_time)) {
-			$etc = strtotime($end_time);
-		} else {
-			$etc = null;
-		}
+        if($textTime == "yes") {
+            $stc = strtotime($start_time);
+    		if(!empty($end_time)) {
+    			$etc = strtotime($end_time);
+    		} else {
+    			$etc = null;
+    		}
+        } else {
+            
+        }
+		
 
 		$this->form_validation->set_rules('date','Date','required|xss_clean');
 		$this->form_validation->set_rules('event_name','Event Name','required|xss_clean');
@@ -97,11 +105,26 @@ class Event extends MX_Controller
 			} else {
 				$day_headings = null;
 			}
-			if(!empty($end_time)) {
-				$end_time = strtotime($end_time);
-			} else {
-				$end_time = null;
-			}
+			
+			if($textTime == "yes") {
+                $start_time = $this->input->post('start_time_text');
+                if(!empty($this->input->post('end_time_text'))) {
+                    $end_time = $this->input->post('end_time_text');
+                } else {
+                    $end_time = null;
+                }
+            } else {
+                $textTime = null;
+               if(!empty($end_time)) {
+                    $start_time = strtotime($start_time);
+    				$end_time = strtotime($end_time);
+    			} else {
+    			    $start_time = strtotime($start_time);
+    				$end_time = null;
+    			} 
+            }
+			
+			
 			//$event_types = implode(",", $event_type);
 			if(empty($id)) {
 				$data = array(
@@ -111,10 +134,11 @@ class Event extends MX_Controller
 					'notes' => $notes,
 					'event_type' => $event_type,
 					'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-					'start_time' => strtotime($start_time),
+					'start_time' => $start_time,
 					'end_time' => $end_time,
 					'location' => $location,
-					'isAged' => $isAged
+					'isAged' => $isAged,
+					'text_time' => $textTime
 				);
 
 				$this->event_model->addEvent($data);
@@ -130,10 +154,11 @@ class Event extends MX_Controller
 					'notes' => $notes,
 					'event_type' => $event_type,
 					'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-					'start_time' => strtotime($start_time),
+					'start_time' => $start_time,
 					'end_time' => $end_time,
 					'location' => $location,
-					'isAged' => $isAged
+					'isAged' => $isAged,
+					'text_time' => $textTime
 				);
 				$this->event_model->editEvent($id, $data);
 				$this->session->set_flashdata('message', 'Edit Successful!');
@@ -342,11 +367,6 @@ class Event extends MX_Controller
             foreach($schedules as $schedule) {
                 $date2 = date('m/d/Y',$schedule->date);
                 $hidden_event_type = $this->db->get_where('event_types',array('id' => $schedule->event_type))->row();
-                if(!empty($schedule->end_time) || $schedule->end_time != null){
-                    $ed = " - ".date("h:i A",$schedule->end_time);
-                } else {
-                    $ed = "";
-                }
                 $isAged = "";
                 if(!empty($schedule->isAged)) {
                     $isAged = "Yes";
@@ -354,7 +374,22 @@ class Event extends MX_Controller
                     $isAged = "No";
                 }
 
-                $time2 = date("h:i A",$schedule->start_time) . $ed;
+                if($schedule->text_time == "yes") {
+                    if(!empty($schedule->end_time) || $schedule->end_time != null){
+                        $ed = " - ".$schedule->end_time;
+                    } else {
+                        $ed = "";
+                    }
+                    $time2 = $schedule->start_time . $ed;
+                } else {
+                    if(!empty($schedule->end_time) || $schedule->end_time != null){
+                        $ed = " - ".date("h:i A",$schedule->end_time);
+                    } else {
+                        $ed = "";
+                    }
+                    $time2 = date("h:i A",$schedule->start_time) . $ed;
+                }
+                
                 $name = $schedule->name;
                 $location = $this->db->get_where('location',array('id' => $schedule->location))->row();
 				if(isset($location)) {
@@ -402,7 +437,8 @@ class Event extends MX_Controller
                 'kriyas_shema_2' => '12:00 PM',
                 'shkiya_1' => '12:00 PM',
                 'shkiya_2' => '12:00 AM',
-                'day_heading' => ''
+                'day_heading' => '',
+                'id' => ""
             );
         }
         $data['dayTime'] = $dayTime;

@@ -10,7 +10,7 @@
 
 <div class="table_styles">
     <div>
-        
+
     </div>
 </div>
 <!--main content start-->
@@ -27,24 +27,39 @@
                     <div class="card-body">
                         <form action="<?php echo site_url('event/addEditEvent'); ?>" method="post">
                             <div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label for="exampleInputEmail1"><?php echo lang('event') . " " . lang('date'); ?></label><span style="color: red; font-weight: bold;">*</span>
-										<div class="">
-											<div class="input-group date dpYears" data-date-viewmode="years" data-date-format="mm/dd/yyyy" data-date="<?php echo date('m/d/Y'); ?>">
-												<input type="text" name="date" class="form-control eventDate" value="<?php if(!empty($input_date->date)) {
-													echo date('m/d/Y',$input_date->date);
-												} else {
-													echo date('m/d/Y');
-												} ?>" aria-label="Right Icon" aria-describedby="dp-ig" required>
-												<div class="input-group-append">
-													<button id="dp-ig" class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar f14"></i></button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div>
+                                            <label for="exampleInputEmail1"><?php echo lang('event') . " " . lang('date'); ?></label><span style="color: red; font-weight: bold;">*</span>
+                                            <button class="btn btn-success backwardDate" style="padding: 5px !important; font-size: 10px !important;"><i class="fa fa-arrow-left"></i></button>
+                                            <button class="btn btn-success forwardDate" style="padding: 5px !important; font-size: 10px !important;"><i class="fa fa-arrow-right"></i></button>
+                                        </div>
+                                        <div class="">
+                                            <div class="input-group date dpYears" data-date-viewmode="years" data-date-format="mm/dd/yyyy" data-date="<?php echo date('m/d/Y'); ?>">
+                                                <input type="text" name="date" class="form-control eventDate" value="<?php
+                                                if (!empty($input_date->date)) {
+                                                    echo date('m/d/Y', $input_date->date);
+                                                } else if (isset($initial_date->daterange) && !empty($initial_date->daterange)) {
+                                                    $initialDate = explode(" - ", $initial_date->daterange);
+                                                    echo $initialDate[0];
+                                                } else {
+                                                    echo date('m/d/Y');
+                                                }
+                                                ?>" aria-label="Right Icon" aria-describedby="dp-ig" required>
+                                                <div class="input-group-append">
+                                                    <button id="dp-ig" class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar f14"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="checkbox" class="textTime" value="yes" name="textTime"> Text Time 
+                                    </div>
+                                </div>
+                                <div class="col-md-6 intTime">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo lang('start_time'); ?></label><span style="color: red; font-weight: bold;">*</span>
                                         <div class="">
@@ -55,7 +70,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 intTime">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo lang('end_time'); ?></label>
                                         <div class="">
@@ -66,14 +81,40 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-6 textTimeInput">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1"><?php echo lang('start_time'); ?></label><span style="color: red; font-weight: bold;">*</span>
+                                        <div class="">
+                                            <div class="input-group bootstrap-timepicker">
+                                                <input type="text" class="form-control rounded mr-3 " name="start_time_text" aria-label="Right Icon" aria-describedby="basic-addon15" value="After Lunch">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 textTimeInput">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1"><?php echo lang('end_time'); ?></label>
+                                        <div class="">
+                                            <div class="input-group bootstrap-timepicker">
+                                                <input type="text" class="form-control rounded mr-3 " name="end_time_text" aria-label="Right Icon" aria-describedby="basic-addon15" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class=""><?php echo lang('event') . " " . lang('type'); ?></label><span style="color: red; font-weight: bold;">*</span>
                                 <select class="js-example-basic-multiple" name="event_type" multiple="multiple">
-                                    <?php foreach ($event_types as $event_type) { 
-                                        if($event_type->status == 1) { ?>
-                                        <option value="<?php echo $event_type->id; ?>"><?php echo $event_type->name; ?></option>
-                                    <?php } } ?>
+                                    <?php
+                                    foreach ($event_types as $event_type) {
+                                        if ($event_type->status == 1) {
+                                            ?>
+                                            <option value="<?php echo $event_type->id; ?>"><?php echo $event_type->name; ?></option>
+                                        <?php
+                                        }
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -88,10 +129,15 @@
                                 <label class=""><?php echo lang('location'); ?></label><span style="color: red; font-weight: bold;">*</span>
                                 <select class="js-example-basic-single locationSelect" name="location" >
                                     <option value="0">Select a location...</option>
-                                    <?php foreach ($locations as $location) { 
-                                        if($location->status == 1) { ?>
-                                    <option class="location_option" value="<?php echo $location->id; ?>"><?php echo $location->name; ?></option>
-                                    <?php } } ?>
+                                    <?php
+                                    foreach ($locations as $location) {
+                                        if ($location->status == 1) {
+                                            ?>
+                                            <option class="location_option" value="<?php echo $location->id; ?>"><?php echo $location->name; ?></option>
+                                        <?php
+                                        }
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -105,10 +151,10 @@
                         <hr>
                         <br>
                         <h4 style="text-align: center; font-weight: 700;"><?php echo lang('schedule'); ?></h4>
-						<div class="dayInfoDetails"></div>
-                        <!--<input type="button print_pdf " onclick="printDiv('schedule_table')" value="print a div!" />--><a class="btn btn-warning btn-md" onclick="printCSV()"><font style="color: white;">Download CSV</font></a>
+                        <div class="dayInfoDetails"></div>
+<!--<input type="button print_pdf " onclick="printDiv('schedule_table')" value="print a div!" />--><a class="btn btn-warning btn-md" onclick="printCSV()"><font style="color: white;">Download CSV</font></a>
 
-						<div id="schedule_table" class="schedule_table">
+                        <div id="schedule_table" class="schedule_table">
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
@@ -185,44 +231,49 @@
 
 <script>
     $(document).ready(function () {
+        $('.intTime').css("display", "block")
+        $('.textTimeInput').css("display", "none")
         var date = $('.eventDate').val();
-            console.log(date);
-            $('.print_pdf').attr("href", '');
-            $('.print_pdf').attr("href", 'printPDF?id='+date);
-            $.ajax({
-                url: "<?php echo base_url(); ?>event/getDayScheduleByJson?date=" + date,
-                method: 'GET',
-                data: '',
-                dataType: "json",
-                success: function (response) {
-                    console.log(response);
-                    /*$('#editForm').find('input[name="event"]').val(response.name);
-                     $('#editForm').find('input[name="description"]').val(response.description);
-                     $('#editForm').find('input[name="color"]').val(response.color);*/
-                    $('.table').remove();
-                    $('.table2').remove();
-                    $('.schedule_table').append(response.table);
-                    $('.hidden_table').append(response.hidden_table);
-                    $('.sunrise').val(response.dayTime.sunrise);
-                    $('.chatzos').val(response.dayTime.chatzos);
-                    $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
-                    $('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
-                    $('.shkiya_1').val(response.dayTime.shkiya_1);
-                    $('.shkiya_2').val(response.dayTime.shkiya_2);
-                    $('.in_table_styles').remove();
-                    $('.table_styles').append(response.styles);
-					$('.dayInfoDetails').append(response.dayInfo)
-                    if(response.dayTime.day_heading === "") {
-                        $('.selectMultiple').val("").trigger('change');
-                    } else {
-                        var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
-                        console.log(dhv);            
-                        $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
-                    }
+        console.log(date);
+        $('.print_pdf').attr("href", '');
+        $('.print_pdf').attr("href", 'printPDF?id=' + date);
+        $.ajax({
+            url: "<?php echo base_url(); ?>event/getDayScheduleByJson?date=" + date,
+            method: 'GET',
+            data: '',
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                /*$('#editForm').find('input[name="event"]').val(response.name);
+                 $('#editForm').find('input[name="description"]').val(response.description);
+                 $('#editForm').find('input[name="color"]').val(response.color);*/
+                $('.table').remove();
+                $('.table2').remove();
+                $('.schedule_table').append(response.table);
+                $('.hidden_table').append(response.hidden_table);
+                $('.sunrise').val(response.dayTime.sunrise);
+                $('.chatzos').val(response.dayTime.chatzos);
+                $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
+                $('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
+                $('.shkiya_1').val(response.dayTime.shkiya_1);
+                $('.shkiya_2').val(response.dayTime.shkiya_2);
+                $('.in_table_styles').remove();
+                $('.table_styles').append(response.styles);
+                $('.dayInfoDetails').empty();
+                    $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                            + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                            + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                if (response.dayTime.day_heading === "") {
+                    $('.selectMultiple').val("").trigger('change');
+                } else {
+                    var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+                    console.log(dhv);
+                    $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
                 }
-            });
+            }
+        });
 
-			$('.eventDate').on('change', function () {
+        $('.eventDate').on('change', function () {
             var date = $('.eventDate').val();
             console.log(date);
             $.ajax({
@@ -247,75 +298,173 @@
                     $('.shkiya_2').val(response.dayTime.shkiya_2);
                     $('.in_table_styles').remove();
                     $('.table_styles').append(response.styles);
-					$('.dayInfoDetails').empty();
-					$('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: "+response.dayTime.sunrise+"</h6><h6>Chatzos: "+response.dayTime.chatzos
-						+"</h6><h6>Kriyas Shema 1: "+response.dayTime.kriyas_shema_1+"</h6><h6>Kriyas Shema 2: "+response.dayTime.kriyas_shema_2
-						+"</h6><h6>Shkiya 1: "+response.dayTime.shkiya_1+"</h6><h6>Shkiya 2: "+response.dayTime.shkiya_2+"</h6>");
-                    if(response.dayTime.day_heading === "") {
+                    $('.dayInfoDetails').empty();
+                    $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                            + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                            + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                    if (response.dayTime.day_heading === "") {
                         $('.selectMultiple').val("").trigger('change');
                     } else {
                         var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
-                        console.log(dhv);            
+                        console.log(dhv);
                         $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
                     }
                 }
             });
         });
+
+        $('.forwardDate').on("click", function (e) {
+            e.preventDefault();
+            let date = $('.eventDate').val();
+            $.ajax({
+                url: "<?php echo base_url(); ?>dayinfo/changeDate?date=" + date + "&type=forward",
+                method: 'GET',
+                data: '',
+                dataType: "json",
+                success: function (response) {
+                    $('.eventDate').val(response);
+                    $.ajax({
+                        url: "<?php echo base_url(); ?>event/getDayScheduleByJson?date=" + $('.eventDate').val(),
+                        method: 'GET',
+                        data: '',
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            /*$('#editForm').find('input[name="event"]').val(response.name);
+                             $('#editForm').find('input[name="description"]').val(response.description);
+                             $('#editForm').find('input[name="color"]').val(response.color);*/
+                            $('.table').remove();
+                            $('.table2').remove();
+                            $('.schedule_table').append(response.table);
+                            $('.hidden_table').append(response.hidden_table);
+                            $('.sunrise').val(response.dayTime.sunrise);
+                            $('.chatzos').val(response.dayTime.chatzos);
+                            $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
+                            $('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
+                            $('.shkiya_1').val(response.dayTime.shkiya_1);
+                            $('.shkiya_2').val(response.dayTime.shkiya_2);
+                            $('.in_table_styles').remove();
+                            $('.table_styles').append(response.styles);
+                            $('.dayInfoDetails').empty();
+                            $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                                    + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                                    + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                            if (response.dayTime.day_heading === "") {
+                                $('.selectMultiple').val("").trigger('change');
+                            } else {
+                                var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+                                console.log(dhv);
+                                $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
+                            }
+                        }
+                    });
+                }
+            });
+        })
+
+        $('.backwardDate').on("click", function (e) {
+            e.preventDefault();
+            let date = $('.eventDate').val();
+            $.ajax({
+                url: "<?php echo base_url(); ?>dayinfo/changeDate?date=" + date + "&type=backward",
+                method: 'GET',
+                data: '',
+                dataType: "json",
+                success: function (response) {
+                    $('.eventDate').val(response);
+                    $.ajax({
+                        url: "<?php echo base_url(); ?>event/getDayScheduleByJson?date=" + $('.eventDate').val(),
+                        method: 'GET',
+                        data: '',
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            /*$('#editForm').find('input[name="event"]').val(response.name);
+                             $('#editForm').find('input[name="description"]').val(response.description);
+                             $('#editForm').find('input[name="color"]').val(response.color);*/
+                            $('.table').remove();
+                            $('.table2').remove();
+                            $('.schedule_table').append(response.table);
+                            $('.hidden_table').append(response.hidden_table);
+                            $('.sunrise').val(response.dayTime.sunrise);
+                            $('.chatzos').val(response.dayTime.chatzos);
+                            $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
+                            $('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
+                            $('.shkiya_1').val(response.dayTime.shkiya_1);
+                            $('.shkiya_2').val(response.dayTime.shkiya_2);
+                            $('.in_table_styles').remove();
+                            $('.table_styles').append(response.styles);
+                            $('.dayInfoDetails').empty();
+                            $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                                    + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                                    + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                            if (response.dayTime.day_heading === "") {
+                                $('.selectMultiple').val("").trigger('change');
+                            } else {
+                                var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+                                console.log(dhv);
+                                $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
+                            }
+                        }
+                    });
+                }
+            });
+        })
     })
 </script>
 
 <script>
     function printDiv(divName) {
-     var printContents = document.getElementById(divName).innerHTML;
-     var originalContents = document.body.innerHTML;
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
 
-     document.body.innerHTML = printContents;
+        document.body.innerHTML = printContents;
 
-     window.print();
+        window.print();
 
-     document.body.innerHTML = originalContents;
-}
-    
+        document.body.innerHTML = originalContents;
+    }
+
     $(document).ready(function () {
-        
+
         /*$('.start_time').on('change',function() {
-            var date = $('.eventDate').val();
-            var start_time = $('.start_time').val();
-            $.ajax({
-                url: "event/checkLocationOptionBySTime?date=" + date + "&start_time=" + start_time,
-                method: 'GET',
-                data: '',
-                dataType: "json",
-                success: function (response) {
-                    console.log(response);
-                    $('.location_option').remove();
-                    $('.js-example-basic-single').append(response.options);
-                }
-            });
-        })*/
-        
-        
+         var date = $('.eventDate').val();
+         var start_time = $('.start_time').val();
+         $.ajax({
+         url: "event/checkLocationOptionBySTime?date=" + date + "&start_time=" + start_time,
+         method: 'GET',
+         data: '',
+         dataType: "json",
+         success: function (response) {
+         console.log(response);
+         $('.location_option').remove();
+         $('.js-example-basic-single').append(response.options);
+         }
+         });
+         })*/
+
+
         /*$('.end_time').on('change',function() {
-            var date = $('.eventDate').val();
-            var start_time = $('.start_time').val();
-            var end_time = $('.end_time').val();
-            $.ajax({
-                url: "event/checkLocationOptionByETime?date=" + date + "&start_time=" + start_time + "&end_time=" + end_time,
-                method: 'GET',
-                data: '',
-                dataType: "json",
-                success: function (response) {
-                    console.log(response);
-                    /*$('#editForm').find('input[name="event"]').val(response.name);
-                     $('#editForm').find('input[name="description"]').val(response.description);
-                     $('#editForm').find('input[name="color"]').val(response.color);*/
-                    /*$('.location_option').remove();
-                    $('.js-example-basic-single').append(response.options);
-                }
-            });
-        })*/
-        
-        $('.locationSelect').on('change',function() {
+         var date = $('.eventDate').val();
+         var start_time = $('.start_time').val();
+         var end_time = $('.end_time').val();
+         $.ajax({
+         url: "event/checkLocationOptionByETime?date=" + date + "&start_time=" + start_time + "&end_time=" + end_time,
+         method: 'GET',
+         data: '',
+         dataType: "json",
+         success: function (response) {
+         console.log(response);
+         /*$('#editForm').find('input[name="event"]').val(response.name);
+         $('#editForm').find('input[name="description"]').val(response.description);
+         $('#editForm').find('input[name="color"]').val(response.color);*/
+        /*$('.location_option').remove();
+         $('.js-example-basic-single').append(response.options);
+         }
+         });
+         })*/
+
+        $('.locationSelect').on('change', function () {
             var date = $('.eventDate').val();
             var location = $('.locationSelect').val();
             var start_time = $('.start_time').val();
@@ -327,15 +476,25 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
-                    if(response.status === "Have booked for another program! Wanna Continue?") {
+                    if (response.status === "Have booked for another program! Wanna Continue?") {
                         alert("Have booked for another program! Wanna Continue?");
                     } else {
-                        
+
                     }
                 }
             });
-            
+
         })
-        
+
+        $('.textTime').click(function () {
+            if ($(this).is(":checked")) {
+                $('.intTime').css("display", "none")
+                $('.textTimeInput').css("display", "block")
+            } else {
+                $('.intTime').css("display", "block")
+                $('.textTimeInput').css("display", "none")
+            }
+        });
+
     });
 </script>
