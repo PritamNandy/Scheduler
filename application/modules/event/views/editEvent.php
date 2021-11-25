@@ -105,12 +105,14 @@
                             <div class="form-group">
                                 <label class=""><?php echo lang('event') . " " . lang('type'); ?></label><span style="color: red; font-weight: bold;">*</span>
                                 <select class="js-example-basic-multiple" name="event_type" multiple="multiple">
-<?php foreach ($event_types as $event_type) {
-    if ($event_type->status == 1) {
-        ?>
+                                    <?php
+                                    foreach ($event_types as $event_type) {
+                                        if ($event_type->status == 1) {
+                                            ?>
                                             <option value="<?php echo $event_type->id; ?>" <?php if ($event_type->id == $event->event_type) { ?>selected<?php } ?>><?php echo $event_type->name; ?></option>
-    <?php }
-} ?>
+                                        <?php }
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -124,12 +126,14 @@
                             <div class="form-group">
                                 <label class=""><?php echo lang('location'); ?></label><span style="color: red; font-weight: bold;">*</span>
                                 <select class="js-example-basic-single locationSelect" name="location" >
-<?php foreach ($locations as $location) {
-    if ($location->status == 1) {
-        ?>
+                                    <?php
+                                    foreach ($locations as $location) {
+                                        if ($location->status == 1) {
+                                            ?>
                                             <option class="location_option" value="<?php echo $location->id; ?>" <?php if ($location->id == $event->location) { ?>selected<?php } ?>><?php echo $location->name; ?></option>
     <?php }
-} ?>
+}
+?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -246,15 +250,32 @@
                                          $('#editForm').find('input[name="description"]').val(response.description);
                                          $('#editForm').find('input[name="color"]').val(response.color);*/
                                         $('.table').remove();
+                                        $('.table2').remove();
                                         $('.schedule_table').append(response.table);
+                                        $('.hidden_table').append(response.hidden_table);
                                         $('.sunrise').val(response.dayTime.sunrise);
                                         $('.chatzos').val(response.dayTime.chatzos);
                                         $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
                                         $('.kriyas_shema_2').val(response.dayTime.kriyas_shema_2);
                                         $('.shkiya_1').val(response.dayTime.shkiya_1);
                                         $('.shkiya_2').val(response.dayTime.shkiya_2);
+                                        $('.in_table_styles').remove();
+                                        $('.table_styles').append(response.styles);
+                                        $('.dayInfoDetails').empty();
+                                        $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                                                + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                                                + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                                        if (response.dayTime.day_heading === "") {
+                                            $('.selectMultiple').val("").trigger('change');
+                                        } else {
+                                            var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+                                            console.log(dhv);
+                                            $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
+                                        }
                                     }
                                 });
+                                
+                                
                                 $('.eventDate').on('change', function () {
                                     var date = $('.eventDate').val();
                                     console.log(date);
@@ -269,7 +290,9 @@
                                              $('#editForm').find('input[name="description"]').val(response.description);
                                              $('#editForm').find('input[name="color"]').val(response.color);*/
                                             $('.table').remove();
+                                            $('.table2').remove();
                                             $('.schedule_table').append(response.table);
+                                            $('.hidden_table').append(response.hidden_table);
                                             $('.sunrise').val(response.dayTime.sunrise);
                                             $('.chatzos').val(response.dayTime.chatzos);
                                             $('.kriyas_shema_1').val(response.dayTime.kriyas_shema_1);
@@ -278,6 +301,17 @@
                                             $('.shkiya_2').val(response.dayTime.shkiya_2);
                                             $('.in_table_styles').remove();
                                             $('.table_styles').append(response.styles);
+                                            $('.dayInfoDetails').empty();
+                                            $('.dayInfoDetails').append("<b>Day Heading: </b><h6>Sunrise: " + response.dayTime.sunrise + "</h6><h6>Chatzos: " + response.dayTime.chatzos
+                                                    + "</h6><h6>Kriyas Shema 1: " + response.dayTime.kriyas_shema_1 + "</h6><h6>Kriyas Shema 2: " + response.dayTime.kriyas_shema_2
+                                                    + "</h6><h6>Shkiya 1: " + response.dayTime.shkiya_1 + "</h6><h6>Shkiya 2: " + response.dayTime.shkiya_2 + "</h6>");
+                                            if (response.dayTime.day_heading === "") {
+                                                $('.selectMultiple').val("").trigger('change');
+                                            } else {
+                                                var dhv = response.dayTime.day_heading.split(','); // Select the option with a value of '1'
+                                                console.log(dhv);
+                                                $('.selectMultiple').val(dhv).trigger('change'); // Notify any JS components that the value changed
+                                            }
                                         }
                                     });
                                 });
