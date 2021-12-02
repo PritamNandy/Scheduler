@@ -404,7 +404,7 @@ class Event extends MX_Controller {
                 $data['table'] .= "<tr class='tr_$count' bgcolor='$schedule->color'><td><font color='$font_color'>$time2</font></td><td><font color='$font_color'>$name</font></td><td><font color='$font_color'>$location</font></td>"
                         . "<td><a class='btn btn-warning btn-sm' href='" . site_url('event/editEvent/?id=' . $schedule->id) . "'>Edit</a> "
                         . "<a class='btn btn-danger btn-sm' href='" . site_url('event/deleteEvent/?id=' . $schedule->id) . "'>Delete</a></td></tr>";
-                $data['hidden_table'] .= "<tr bgcolor='$schedule->color'><td><font color='$font_color'>$date2</font></td>"
+                $data['hidden_table'] .= "<tr style='background:$schedule->color'><td><font color='$font_color'>$date2</font></td>"
                         . "<td><font color='$font_color'>$time2</font></td>"
                         . "<td><font color='$font_color'>$ed</font></td>"
                         . "<td><font color='$font_color'>$hidden_event_type->name</font></td>"

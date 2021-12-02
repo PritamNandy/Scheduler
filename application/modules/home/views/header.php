@@ -221,6 +221,12 @@
 <!--							</a>-->
 <!--						</li>-->
                         <li>
+                            <a href="<?php echo site_url('user'); ?>">
+                                <i class="fa fa-users"></i>
+                                <span><?php echo "Users"; ?></span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="<?php echo site_url('profile'); ?>">
                                 <i class="fa fa-user"></i>
                                 <span><?php echo lang('profile'); ?></span>
