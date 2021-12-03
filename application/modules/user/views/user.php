@@ -39,7 +39,7 @@
                                     <tr>
                                         <td><?php echo $user->username; ?></td>
                                         <td><?php echo $user->email; ?></td>
-                                        <td><a class="btn btn-warning" href="user/editUser?id=<?php echo $user->id; ?>">Edit</a> <a class="btn btn-warning" href="user/deleteUser?id=<?php echo $user->id; ?>">Delete</a></td>
+                                        <td><a class="btn btn-warning" href="user/editUser?id=<?php echo $user->id; ?>">Edit</a> <a class="btn btn-danger" href="user/deleteUser?id=<?php echo $user->id; ?>">Delete</a></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>

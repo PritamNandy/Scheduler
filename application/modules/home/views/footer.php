@@ -1,7 +1,7 @@
 <!--footer start-->
 <footer class="site-footer" style="bottom: 0px !important; z-index: 0 !important;">
     <div class="text-center">
-        2018 &copy; Scheduler by <b><a href="https://heydev.net">HeyDev</a></b>.
+        <?php echo date('Y'); ?> &copy; Scheduler by <b><a href="https://heydev.net">HeyDev</a></b>.
         <a href="#" class="go-top">
             <i class="fa fa-angle-up"></i>
         </a>

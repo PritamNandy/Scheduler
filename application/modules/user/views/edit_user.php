@@ -30,15 +30,16 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo "User Name"; ?></label><span style="color: red; font-weight: bold;">*</span>
-                                        <input type="text" class="form-control" name="name" required>
+                                        <input type="text" class="form-control" name="name" required value="<?php echo $user->username; ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo "Email"; ?></label><span style="color: red; font-weight: bold;">*</span>
-                                        <input type="text" class="form-control" name="email" required>
+                                        <input type="text" class="form-control" name="email" required value="<?php echo $user->email; ?>">
                                     </div>
                                 </div>
+                                <input type="hidden" name="id" value="<?php echo $user->id; ?>">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <button class="btn btn-success btn-md" type="submit"><?php echo lang('submit'); ?></button>

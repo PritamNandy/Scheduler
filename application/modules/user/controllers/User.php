@@ -22,6 +22,15 @@ class User extends MX_Controller {
         $this->load->view('home/footer');
     }
     
+    function editUser() {
+        $id = $this->input->get('id');
+        $data['user'] = $this->user_model->getUserById($id);
+        $data['settings'] = $this->db->get('settings')->row();
+        $this->load->view('home/header',$data);
+        $this->load->view('edit_user', $data);
+        $this->load->view('home/footer');
+    }
+    
     function addEditUser() {
         $id = $this->input->post("id");
         $name = $this->input->post("name");
@@ -31,21 +40,59 @@ class User extends MX_Controller {
         $this->form_validation->set_rules('email', 'Email', 'required|xss_clean');
         
        if($this->form_validation->run() == true) {
-            $checkEmail = $this->db->get_where("users", array("email" => $email))->row();
-            if(count($checkEmail) > 0) {
-                $this->session->set_flashdata('message', 'Email Already Exists!');
-                redirect('event/addEvent');
+            if(empty($id)) {
+                $checkEmail = $this->db->get_where("users", array("email" => $email))->row();
+                if($checkEmail) {
+                    $this->session->set_flashdata('message', 'Email Already Exists!');
+                    redirect('user/addUser');
+                } else {
+                    $group = 1;
+                    $password = "12345";
+                    $this->ion_auth->register($name, $password, $email, $group);
+                    $this->session->set_flashdata('message', 'User Added!');
+                    redirect('user');
+                }
             } else {
-                $group = 1;
-                $password = "12345";
-                $this->ion_auth->register($name, $password, $email, $group);
-                $this->session->set_flashdata('message', 'User Added!');
-                redirect('event/addEvent');
+                $checkEmail = $this->db->get_where("users", array("email" => $email))->row();
+                if($checkEmail) {
+                    if($checkEmail->email == $email) {
+                        $data = array(
+                            "username" => $name,
+                            'email' => $email
+                        );
+                        $this->user_model->editUser($id, $data);
+                        $this->session->set_flashdata('message', 'Updated Successfully!');
+                        redirect('user');
+                    } else {
+                          $this->session->set_flashdata('message', 'Email Already Exists!');
+                          redirect('user/editUser?id='.$id);
+                    }
+                } else {
+                    $data = array(
+                        "username" => $name,
+                        'email' => $email
+                    );
+                    $this->user_model->editUser($id, $data);
+                    $this->session->set_flashdata('message', 'Updated Successfully!');
+                    redirect('user');
+                }
             }
         } else {
-            $this->session->set_flashdata('message', 'Fill Required Fields!');
-            redirect('event/addEvent');
+            if(empty($id)) {
+                $this->session->set_flashdata('message', 'Fill Required Fields!');
+                redirect('user/addUser');
+            } else {
+                $this->session->set_flashdata('message', 'Fill Required Fields!');
+                redirect('user/editUser?id='.$id);
+            }
         }
+    }
+    
+    function deleteUser() {
+        $id = $this->input->get("id");
+        $this->user_model->deleteUser($id);
+        $this->session->set_flashdata('message', 'Deleted Successfully!');
+        redirect('user');
     }
 }
 
