@@ -94,5 +94,67 @@ class User extends MX_Controller {
         $this->session->set_flashdata('message', 'Deleted Successfully!');
         redirect('user');
     }
+    
+    function forgotPassword() {
+        $email = $this->input->post("email");
+        $check = $this->db->get_where("users", array("email" => $email))->row();
+        
+        if($check) {
+            $code = rand(0000, 9999);
+        
+            $data = array(
+                'forgotten_password_code' => $code
+            );
+
+            $this->db->where('email', $email);
+            $this->db->update("users", $data);
+            $link = site_url('user/changePassword?id='.$check->id.'&token='.$code);
+
+            $this->load->library('email');
+            $this->email->from('info@pttschedule.com', 'PTTSchedule');
+            $this->email->to($email);
+
+            $this->email->subject('Reset Password');
+            $this->email->message('Change password using this link: '.$link);
+            $this->email->set_mailtype("html");
+
+            $this->email->send();
+        } else {
+            $this->session->set_flashdata('message', 'Email Not Found');
+            redirect("auth/login");
+        }
+    }
+    
+    function changePassword() {
+        $id = $this->input->get("id");
+        $token = $this->input->get("token");
+        
+        $check = $this->db->get_where("users", array("id" => $id, 'forgotten_password_code' => $token))->row();
+        
+        if($check) {
+            $data["id"] = $check->id;
+            $this->load->view("changePassword", $data);
+        } else {
+            $this->session->set_flashdata('message', 'Token Expired');
+            redirect("auth/login");
+        }
+    }
+    
+    function updatePassword() {
+        $id = $this->input->post("id");
+        $password = $this->input->post("password");
+        $data = array(
+            "password" => $password
+        );
+        $this->ion_auth->update($id, $data);
+        $data2 = array(
+            'forgotten_password_code' => null
+        );
+        $this->db->where('id', $id);
+        $this->db->update("users", $data2);
+        
+        $this->session->set_flashdata('message', 'Password Changed Successfully');
+        redirect("auth/login");
+    }
 }
 
