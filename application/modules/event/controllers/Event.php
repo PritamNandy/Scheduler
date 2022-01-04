@@ -81,9 +81,9 @@ class Event extends MX_Controller {
         $textTime = $this->input->post('textTime');
 
         if ($textTime == "yes") {
-            $stc = strtotime($start_time);
+            $stc = strtotime($date ." ". $start_time);
             if (!empty($end_time)) {
-                $etc = strtotime($end_time);
+                $etc = strtotime($date ." ". $end_time);
             } else {
                 $etc = null;
             }
@@ -118,10 +118,10 @@ class Event extends MX_Controller {
             } else {
                 $textTime = null;
                 if (!empty($end_time)) {
-                    $start_time = strtotime($start_time);
-                    $end_time = strtotime($end_time);
+                    $start_time = strtotime($date ." ". $start_time);
+                    $end_time = strtotime($date ." ". $end_time);
                 } else {
-                    $start_time = strtotime($start_time);
+                    $start_time = strtotime($date ." ". $start_time);
                     $end_time = null;
                 }
             }
@@ -170,6 +170,31 @@ class Event extends MX_Controller {
         } else {
             $this->session->set_flashdata('message', 'Not Successful!');
             redirect('event/addEvent');
+        }
+    }
+    
+    function makeEventsCorrect() {
+        $events = $this->db->get('events')->result();
+        foreach($events as $event) {
+            if($event->text_time == "yes") {
+                
+            } else {
+                $date = date('Y-m-d', $event->date);
+                $start_time = date("H:i:s", $event->start_time);
+                if($event->end_time != null) {
+                    $end_time = date("H:i:s", $event->end_time);
+                    $end_time = strtotime($date ." ". $end_time);
+                }
+                
+                $data = array(
+                    'start_time' => strtotime($date  ." ". $start_time),
+                    'end_time' => $end_time
+                );
+                
+                $this->db->where('id', $event->id);
+                $this->db->update("events", $data);
+            }
+            
         }
     }
 

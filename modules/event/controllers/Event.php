@@ -79,9 +79,9 @@ class Event extends MX_Controller
         $isAged = $this->input->post('isAged');
         $day_heading_text = $this->input->post('day_heading_text');
         
-        $stc = strtotime($start_time);
+        $stc = strtotime($date ." ". $start_time);
         if(!empty($end_time)) {
-            $etc = strtotime($end_time);
+            $etc = strtotime($date ." ". $end_time);
         } else {
             $etc = "";
         }
@@ -133,7 +133,7 @@ class Event extends MX_Controller
                $this->event_model->insertDateTime($data2);
             }
             if(!empty($end_time)) {
-                $end_time = strtotime($end_time);
+                $end_time = strtotime($date ." ". $end_time);
             }
             //$event_types = implode(",", $event_type);
             if(empty($id)) {
@@ -144,7 +144,7 @@ class Event extends MX_Controller
                     'notes' => $notes,
                     'event_type' => $event_type,
                     'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-                    'start_time' => strtotime($start_time),
+                    'start_time' => strtotime($date ." ". $start_time),
                     'end_time' => $end_time,
                     'location' => $location,
                     'isAged' => $isAged
@@ -163,7 +163,7 @@ class Event extends MX_Controller
                     'notes' => $notes,
                     'event_type' => $event_type,
                     'color' => $this->db->get_where('event_types',array('id' => $event_type))->row()->color,
-                    'start_time' => strtotime($start_time),
+                    'start_time' => strtotime($date ." ". $start_time),
                     'end_time' => $end_time,
                     'location' => $location,
                     'isAged' => $isAged
