@@ -95,7 +95,13 @@ class Event extends MX_Controller {
         $this->form_validation->set_rules('date', 'Date', 'required|xss_clean');
         $this->form_validation->set_rules('event_name', 'Event Name', 'required|xss_clean');
         $this->form_validation->set_rules('event_type', 'Event Type', 'required|xss_clean');
-        $this->form_validation->set_rules('start_time', 'Start Time', 'required|xss_clean');
+        
+        if ($textTime == "yes") {
+                    $this->form_validation->set_rules('start_time_text', 'Start Time', 'required|xss_clean');
+        } else {
+                    $this->form_validation->set_rules('start_time', 'Start Time', 'required|xss_clean');
+        }
+
         $this->form_validation->set_rules('location', 'Location', 'required|xss_clean');
 
         if ($this->form_validation->run() == true) {
@@ -387,6 +393,7 @@ class Event extends MX_Controller {
         $date = $this->input->get('date');
         strtotime($date);
         $schedules = $this->event_model->getScheduleByDate(strtotime($date));
+        
         $data['table'] = "<table class='table'><thead class='thead-dark'><tr><th scope='col'>" . lang('time') . "</th><th scope='col'>" . lang('event') . "</th><th scope='col'>" . lang('location') . "</th><th scope='col'>" . lang('options') . "</th></tr></thead><tbody>";
         $data['hidden_table'] = "<table class='table2'><thead class='thead-dark'><tr><th scope='col'>" . lang('date') . "</th><th scope='col'>" . lang('start_time') . "</th><th scope='col'>" . lang('end_time') . "</th><th scope='col'> Event Type </th><th scope='col'>" . lang('event') . "</th><th scope='col'> Event Notes </th><th scope='col'>" . lang('location') . "</th><th scope='col'> Cell Color </th><th scope='col'> Text Color </th><th scope='col'> Over 12 </th></tr></thead><tbody>";
 
