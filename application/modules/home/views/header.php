@@ -193,6 +193,11 @@
 										<span><?php echo "Default Date"; ?></span>
 									</a>
 								</li>
+								<li>
+									<a  href="<?php echo site_url('report/reset_date'); ?>">
+										<span><?php echo "Reset Date"; ?></span>
+									</a>
+								</li>
 							</ul>
 						</li>
 <!--                        <li>-->
